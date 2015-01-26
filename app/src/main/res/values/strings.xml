@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Image Capturer Demo</string>
+    <string name="show_image">Show Image</string>
+    <string name="image_source_chooser_title">Select Image Source</string>
+    <string name="image_capture_setup_failed">Image capture setup failed</string>
+    <string name="image_capture_failed_memory">Image capture failed (memory)</string>
+    <string name="image_capture_failed_io">Image capture failed (I/O)</string>
+    <string name="image_capture_failed_result_format">Image capture failed. Result: %$1s</string>
+
+</resources>
