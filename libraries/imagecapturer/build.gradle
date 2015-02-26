@@ -1,3 +1,4 @@
+apply plugin: 'android-sdk-manager'
 apply plugin: 'com.android.library'
 
 android {
@@ -21,4 +22,42 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.3'
+}
+
+apply plugin: 'maven'
+
+uploadArchives {
+    def creds = getCredentials(REPOSITORY_ID)
+    def snapshot_creds = getCredentials(SNAPSHOT_REPOSITORY_ID)
+    repositories.mavenDeployer {
+        pom.groupId = PUBLISH_GROUP_ID
+        pom.artifactId = PUBLISH_ARTIFACT_ID
+        pom.version = PUBLISH_VERSION
+
+        repository(url: REPOSITORY_URL) {
+            authentication(userName: creds["username"], password: creds["password"])
+        }
+        snapshotRepository(url: SNAPSHOT_REPOSITORY_URL) {
+            authentication(userName: snapshot_creds["username"], password: snapshot_creds["password"])
+        }
+    }
+}
+
+def getMavenSettingsCredentials() {
+    String userHome = System.getProperty( "user.home" );
+    File mavenSettings = new File(userHome, ".m2/settings.xml")
+    def xmlSlurper = new XmlSlurper()
+    def output = xmlSlurper.parse(mavenSettings)
+    return output."servers"."server"
+}
+
+
+def getCredentials(String repo) {
+    def entries = getMavenSettingsCredentials()
+    for (entry in entries) {
+        if (repo.equalsIgnoreCase( entry."id".text() )) {
+            return [username: entry.username.text(), password: entry.password.text()]
+        }
+    }
+    return [username: '', password: '']
 }
